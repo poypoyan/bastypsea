@@ -4,6 +4,14 @@
 #
 # https://www.youtube.com/watch?v=7CMDMaBsqj0
 #
+# Limitations:
+#     1) Cannot detect multiline variable declarations and actions
+#        (e.g. when data type and variable name are in different lines).
+#        Why would you even do that?
+#     2) Scope of variable declarations and actions are not considered
+#        (e.g. the action is inside which method).
+#        Hence, false positives are possible.
+#
 # MIT License
 #
 # Copyright (c) 2023 poypoyan
@@ -74,7 +82,6 @@ class ApexCodeState:
                     'pline': pline
                 })
                 self.vars.pop(i)
-                # print('xxx', self.vars)
                 return True
         return False
 
@@ -140,8 +147,8 @@ if __name__ == '__main__':
         'act': 'Delete'
     }
 
-    mypath = '.\\prod-classes'   # must contain the Apex classes
-    
+    mypath = '.\\classes'   # must contain the Apex classes
+
     founds = {}
 
     tic = time.perf_counter()
@@ -149,7 +156,7 @@ if __name__ == '__main__':
     for i in classes:
         with open(join(mypath, i), 'r', encoding='utf-8') as fp:
             outputs = bastypsea(fp, inputs)
-        
+
         if len(outputs) > 0:
             founds[i] = outputs
     toc = time.perf_counter()
