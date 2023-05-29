@@ -2,6 +2,13 @@
 # Python prototype
 # By: poypoyan
 #
+# This is for use in Salesforce Apex code debugging/investigation.
+# Given an SObject and a DML operation, this tool finds lines in Apex code
+# where there is a DML operation for a variable of type "that SObject".
+#
+# This is written to be easy to modify for other purposes, and to be
+# understood for porting to other languages.
+#
 # Limitations:
 #     1) Cannot detect multiline variable declarations and actions
 #        (e.g. when data type and variable name are in different lines).
