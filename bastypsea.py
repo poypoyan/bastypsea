@@ -2,15 +2,16 @@
 # Python prototype
 # By: poypoyan
 #
-# https://www.youtube.com/watch?v=7CMDMaBsqj0
-#
 # Limitations:
 #     1) Cannot detect multiline variable declarations and actions
 #        (e.g. when data type and variable name are in different lines).
 #        Why would you even do that?
-#     2) Scope of variable declarations and actions are not considered
+#     2) There are no further checks for variable declarations of more
+#        complex data type like Map (from Id to List of ...).
+#        Hence, false positives are possible for this.
+#     3) Scope of variable declarations and actions are not considered
 #        (e.g. the action is inside which method).
-#        Hence, false positives are possible.
+#        Hence, false positives are possible for this.
 #
 # MIT License
 #
@@ -45,10 +46,10 @@ class ApexCodeState:
         self.vars = []
         self._last_delim = -1
 
-    def upd_from_pline(self, pline: str, delim: int, input: dict, founds: list) -> None:
+    def upd_from_pline(self, pline: str, delim: int, input: dict, founds: list) -> bool:
         if self.comment:
             self._upd_from_delim(delim)
-            return
+            return False
 
         # search for var init
         rgx = f'{ input["obj"] }[a-z0-9_,<>\s]*\s+([a-z0-9_]+)'
@@ -72,13 +73,14 @@ class ApexCodeState:
             self._res_from_action(res2, pline, founds)
 
         self._upd_from_delim(delim)
+        return True
 
     def _res_from_action(self, res: re.Match, pline: str, founds: list) -> bool:
         for i, var in enumerate(self.vars):
             if res.group(1) == var['name']:
                 founds.append({
                     'line_n': self.line,
-                    'fr_line_n': var['line_n'],
+                    'init_line_n': var['line_n'],
                     'pline': pline
                 })
                 self.vars.pop(i)
@@ -122,16 +124,15 @@ def bastypsea(fp, inputs: dict) -> list:
                     part_lines.append(line[part_start: i])
                     part_delims.append(j)
                     part_start = i
-
         part_lines.append(line[part_start: len(line)])
         part_delims.append(-1)
 
         # bastypsea proper
+        # https://www.youtube.com/watch?v=mCeosicdJDI
         for i, pl in enumerate(part_lines):
             code_state.upd_from_pline(pl, part_delims[i], inputs, founds)
 
         code_state.upd_from_newline()
-
     return founds
 
 
@@ -146,7 +147,6 @@ if __name__ == '__main__':
         'obj': 'OpportunityLineItem',
         'act': 'Delete'
     }
-
     mypath = '.\\classes'   # must contain the Apex classes
 
     founds = {}
@@ -162,5 +162,4 @@ if __name__ == '__main__':
     toc = time.perf_counter()
 
     print(f"Completed in {toc - tic:0.6f} seconds")
-
     pprint(founds)
