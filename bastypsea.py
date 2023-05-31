@@ -5,6 +5,7 @@
 # This is for use in Salesforce Apex code debugging/investigation.
 # Given an SObject and a DML operation, this tool finds lines in Apex code
 # where there is a DML operation for a variable of type "that SObject".
+# By default, this ignores test classes.
 #
 # This is written to be easy to modify for other purposes, and to be
 # understood for porting to other languages.
@@ -49,14 +50,23 @@ class ApexCodeState:
     def __init__(self):
         self.DELIMS = ['//', '/*', '*/']
         self.line = 1
-        self.comment = False
         self.vars = []
+        self.is_comment = False
+        self.is_test_class = False
         self._last_delim = -1
+        self._is_in_class_decl = False
 
-    def upd_from_pline(self, pline: str, delim: int, input: dict, founds: list) -> bool:
-        if self.comment:
+    def upd_from_pline(self, pline: str, delim: int, input: dict, founds: list, ignore_test: bool) -> None:
+        if self.is_comment:
             self._upd_from_delim(delim)
-            return False
+
+        # check if test class
+        if ignore_test and not self._is_in_class_decl:
+            if '@istest' in pline.casefold():
+                self.is_test_class = True
+            rgx = '^[a-z\s]+class'
+            if re.search(rgx, pline, re.I):
+                self._is_in_class_decl = True
 
         # search for var init
         rgx = f'{ input["obj"] }[a-z0-9_,<>\s]*\s+([a-z0-9_]+)'
@@ -80,7 +90,6 @@ class ApexCodeState:
             self._res_from_action(res2, pline, founds)
 
         self._upd_from_delim(delim)
-        return True
 
     def _res_from_action(self, res: re.Match, pline: str, founds: list) -> bool:
         for i, var in enumerate(self.vars):
@@ -99,20 +108,20 @@ class ApexCodeState:
             self._last_delim = delim
 
         if delim == 0:
-            self.comment = True
+            self.is_comment = True
         elif delim == 1:
-            self.comment = True
+            self.is_comment = True
         elif delim == 2:
-            self.comment = False
+            self.is_comment = False
 
     def upd_from_newline(self) -> None:
         self.line += 1
 
         if self._last_delim == 0:
-            self.comment = False
+            self.is_comment = False
 
 
-def bastypsea(fp, inputs: dict) -> list:
+def bastypsea(fp, inputs: dict, ignore_test: bool=True) -> list:
     code_state = ApexCodeState()
     founds = []
 
@@ -137,8 +146,11 @@ def bastypsea(fp, inputs: dict) -> list:
         # bastypsea proper
         # https://www.youtube.com/watch?v=mCeosicdJDI
         for i, pl in enumerate(part_lines):
-            code_state.upd_from_pline(pl, part_delims[i], inputs, founds)
-
+            code_state.upd_from_pline(pl, part_delims[i], inputs, founds, ignore_test)
+            if ignore_test and code_state.is_test_class:
+                break
+        if ignore_test and code_state.is_test_class:
+            break
         code_state.upd_from_newline()
     return founds
 
