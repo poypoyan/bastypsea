@@ -15,7 +15,7 @@
 #        (e.g. when data type and variable name are in different lines).
 #        Why would you even do that?
 #     2) There are no further checks for variable declarations of more
-#        complex data type like Map (from Id to List of ...).
+#        complex data type like Maps, Inner Classes, etc.
 #        Hence, false positives are possible for this.
 #     3) Scope of variable declarations and actions are not considered
 #        (e.g. the action is inside which method).
