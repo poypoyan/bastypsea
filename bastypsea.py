@@ -1,47 +1,9 @@
 # Basic Type Search (bastypsea) for Apex language
 # Python prototype
 # By: poypoyan
-#
-# This is for use in Salesforce Apex code debugging/investigation.
-# Given an SObject and a DML operation, this tool finds lines in Apex code
-# where there is a DML operation for a variable of type "that SObject".
-# By default, this ignores test classes.
-#
-# This is written to be easy to modify for other purposes, and to be
-# understood for porting to other languages.
-#
-# Limitations:
-#     1) Cannot detect multiline variable declarations and actions
-#        (e.g. when data type and variable name are in different lines).
-#        Why would you even do that?
-#     2) There are no further checks for variable declarations of more
-#        complex data type like Maps, Inner Classes, etc.
-#        Hence, false positives are possible for this.
-#     3) Scope of variable declarations and actions are not considered
-#        (e.g. the action is inside which method).
-#        Hence, false positives are possible for this.
-#
-# MIT License
-#
-# Copyright (c) 2023 poypoyan
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
+# 
+# Distributed under the MIT software license. See the accompanying
+# file LICENSE or https://opensource.org/license/mit/.
 
 import re
 
