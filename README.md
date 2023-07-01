@@ -3,11 +3,30 @@ Basic Type Search for Apex language
 
 This is for use in Salesforce Apex code debugging/investigation.
 Given an SObject and a DML operation, this tool finds lines in Apex code
-where there is a DML operation for a variable of type _that SObject_.
+where there is a DML operation for a variable of type "that SObject".
 By default, this ignores test classes.
 
 This is written to be easy to modify for other purposes, and to be
 understood for porting to other languages.
+
+**Instruction for Python prototype:**
+1) Download the whole Apex codebase of your project.
+2) Download bastypsea.py
+3) Edit the Python script here:
+```Python
+inputs = {
+    'obj': 'OpportunityLineItem',   # the SObject
+    'act': 'Delete'   # the DML operation
+}
+mypath = '.\\classes'   # the directory path to Apex classes
+```
+You may disable ignoring test classes (thus also search to those)
+by appending `False` as argument to the `bastypsea()` call:
+```Python
+outputs = bastypsea(fp, inputs, False)
+```
+4) Just run Python in terminal: `python bastypsea.py` (Windows)
+or `python3 bastypsea.py` (Linux)
 
 **Limitations:**
 1) Cannot detect multiline variable declarations and actions
@@ -21,4 +40,6 @@ understood for porting to other languages.
    Hence, false positives are possible for this.
 
 ## License
-Distributed under the MIT software license. See the accompanying file LICENSE or https://opensource.org/license/mit/.
+Distributed under the MIT software license. See the accompanying
+file LICENSE or https://opensource.org/license/mit/.
+

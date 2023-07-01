@@ -1,6 +1,6 @@
 # Basic Type Search (bastypsea) for Apex language
 # Python prototype
-# By: poypoyan
+# By poypoyan
 # 
 # Distributed under the MIT software license. See the accompanying
 # file LICENSE or https://opensource.org/license/mit/.
@@ -128,7 +128,7 @@ if __name__ == '__main__':
         'obj': 'OpportunityLineItem',
         'act': 'Delete'
     }
-    mypath = '.\\classes'   # must contain the Apex classes
+    mypath = '.\\classes'
 
     founds = {}
 
