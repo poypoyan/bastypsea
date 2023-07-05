@@ -118,8 +118,8 @@ def bastypsea(fp, inputs: dict, ignore_test: bool=True) -> list:
 
 
 import time
-from os import listdir
-from os.path import isfile, join, splitext
+from glob import glob
+from os.path import isfile, basename
 from pprint import pprint
 
 
@@ -128,19 +128,20 @@ if __name__ == '__main__':
         'obj': 'OpportunityLineItem',
         'act': 'Delete'
     }
-    mypath = '.\\classes'
+    mypath = r'.\classes\*.cls'
 
     founds = {}
 
     tic = time.perf_counter()
-    classes = [f for f in listdir(mypath) if isfile(join(mypath, f)) and splitext(f)[1] == '.cls']
+    classes = [f for f in glob(mypath) if isfile(f)]
     for i in classes:
-        with open(join(mypath, i), 'r', encoding='utf-8') as fp:
+        with open(i, 'r', encoding='utf-8') as fp:
             outputs = bastypsea(fp, inputs)
 
         if len(outputs) > 0:
-            founds[i] = outputs
+            founds[basename(i)] = outputs
     toc = time.perf_counter()
 
     print(f"Completed in {toc - tic:0.6f} seconds")
     pprint(founds)
+

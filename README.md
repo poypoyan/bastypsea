@@ -18,8 +18,10 @@ inputs = {
     'obj': 'OpportunityLineItem',   # the SObject
     'act': 'Delete'   # the DML operation
 }
-mypath = '.\\classes'   # the directory path to Apex classes
+mypath = r'.\classes\*.cls'   # the directory path to Apex classes
 ```
+Note: the use of wildcard `*` to get all files is **required**.
+
 You may disable ignoring test classes (thus also search to those)
 by appending `False` as argument to the `bastypsea()` call:
 ```Python
@@ -33,8 +35,8 @@ or `python3 bastypsea.py` (Linux)
    (e.g. when data type and variable name are in different lines).
    Why would you even do that?
 2) There are no further checks for variable declarations of more
-   complex data type like Maps, Inner Classes, etc.
-   Hence, misses are possible for this.
+   complex data types like Inner Classes, Maps, etc.
+   Hence, misses and false positives are possible for this.
 3) Scope of variable declarations and actions are not considered
    (e.g. the action is inside which method).
    Hence, false positives are possible for this.
