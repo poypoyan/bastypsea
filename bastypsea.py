@@ -25,10 +25,11 @@ class ApexCodeState:
     def upd_from_pline(self, pline: str, delim: int, input_obj: str, input_act: str, founds: list, ignore_test: bool) -> None:
         if self.is_comment:
             self._upd_from_delim(delim)
+            return
 
         # search for outer class init
-        rgx_class = '^[a-z\s]+class\s+([a-z0-9_]+)'
-        rgx_var_init = f'[a-z0-9_,<>\s]*{ input_obj }[a-z0-9_,<>\s]*\s+([a-z0-9_]+)'
+        rgx_class = '^[a-z\\s]+class\\s+([a-z0-9_]+)'
+        rgx_var_init = f'[a-z0-9_,<>\\s]*{ input_obj }[a-z0-9_,<>\\s]*\\s+([a-z0-9_]+)'
         res = re.search(rgx_class, pline, re.I)
         if not self._is_in_outer_class:
             # check if test class
@@ -77,8 +78,8 @@ class ApexCodeState:
             return
 
         # search for action
-        rgx_act_0 = f'[^.]{ input_act }\s+([a-z0-9_]+)'   # DML
-        rgx_act_1 = f'Database.{ input_act }[a-z]*\s*\(\s*([a-z0-9_]+)'   # Database method
+        rgx_act_0 = f'[^.]{ input_act }\\s+([a-z0-9_]+)'   # DML
+        rgx_act_1 = f'Database.{ input_act }[a-z]*\\s*\\(\\s*([a-z0-9_]+)'   # Database method
         for i in [rgx_act_0, rgx_act_1]:
             res = re.search(i, pline, re.I)
             if res:
@@ -86,10 +87,11 @@ class ApexCodeState:
                 self._upd_from_delim(delim)
                 return
 
+        self._upd_from_delim(delim)
+
     def _check_var_init(self, pline: str) -> re.Match:
-        # print(self.types)
         for i in self.types:
-            rgx_var_init = f'[a-z0-9_,<>\s]*{ i }[a-z0-9_,<>\s]*\s+([a-z0-9_]+)'
+            rgx_var_init = f'[a-z0-9_,<>\\s]*{ i }[a-z0-9_,<>\\s]*\\s+([a-z0-9_]+)'
             res = re.search(rgx_var_init, pline, re.I)
             if res:
                 return res
@@ -108,7 +110,7 @@ class ApexCodeState:
         return False
 
     def _upd_from_delim(self, delim: int) -> None:
-        if delim >= 0:
+        if 0 <= delim < 3:
             self._last_delim = delim
 
         if delim == 0:
@@ -165,9 +167,9 @@ from pprint import pprint
 
 
 if __name__ == '__main__':
-    my_obj = 'OpportunityLineItem'
-    my_act = 'Delete'
-    my_path = r'.\classes\*.cls'
+    my_obj = 'Contact'
+    my_act = 'Insert'
+    my_path = r'./testdata/*.cls'
 
     founds = {}
 
