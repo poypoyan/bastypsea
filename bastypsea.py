@@ -9,31 +9,52 @@ import re
 
 
 class ApexCodeState:
-    def __init__(self, obj: str):
+    def __init__(self, obj: str, act: str):
         self.DELIMS = ['//', '/*', '*/', ';', '{', '}']
         self.line = 1
         self.vars = []
         self.types = [obj]
         self.is_comment = False
         self.is_test_class = False
+
+        self._RGX_CLASS = '^[a-z\\s]+class\\s+([a-z0-9_]+)'
+        self._RGX_DMLS = [
+            f'[^.]{ act }\\s+([a-z0-9_]+)',   # DML
+            f'Database.{ act }[a-z]*\\s*\\(\\s*([a-z0-9_]+)'   # Database method
+        ]
         self._last_delim = -1
         self._curly_bracket_ctr = 0
         self._cand_inner_class = ''
         self._is_in_outer_class = False
         self._is_in_inner_class = False
 
-    def upd_from_pline(self, pline: str, delim: int, input_obj: str, input_act: str, founds: list, ignore_test: bool) -> None:
+    def proc_line(self, line: str, founds: list, ignore_test: bool) -> bool:
+        STOP = True
+        part_start = 0
+
+        for i in range(len(line)):
+            for j, delim in enumerate(self.DELIMS):
+                i_plus = i + len(delim)
+                if line[i: i_plus] == delim and (j < 3 or (3 <= j and not self.is_comment)):
+                    self.upd_from_pline(line[part_start: i_plus], j, founds)
+                    if ignore_test and self.is_test_class:
+                        return STOP
+                    part_start = i_plus
+        self.upd_from_pline(line[part_start: len(line)], -1, founds)
+        if ignore_test and self.is_test_class:
+            return STOP
+        return not STOP
+
+    def upd_from_pline(self, pline: str, delim: int, founds: list) -> None:
         if self.is_comment:
             self._upd_from_delim(delim)
             return
 
         # search for outer class init
-        rgx_class = '^[a-z\\s]+class\\s+([a-z0-9_]+)'
-        rgx_var_init = f'[a-z0-9_,<>\\s]*{ input_obj }[a-z0-9_,<>\\s]*\\s+([a-z0-9_]+)'
-        res = re.search(rgx_class, pline, re.I)
+        res = re.search(self._RGX_CLASS, pline, re.I)
         if not self._is_in_outer_class:
             # check if test class
-            if ignore_test and '@istest' in pline.casefold():
+            if '@istest' in pline.casefold():
                 self.is_test_class = True
             if res:
                 self._is_in_outer_class = True
@@ -78,9 +99,7 @@ class ApexCodeState:
             return
 
         # search for action
-        rgx_act_0 = f'[^.]{ input_act }\\s+([a-z0-9_]+)'   # DML
-        rgx_act_1 = f'Database.{ input_act }[a-z]*\\s*\\(\\s*([a-z0-9_]+)'   # Database method
-        for i in [rgx_act_0, rgx_act_1]:
+        for i in self._RGX_DMLS:
             res = re.search(i, pline, re.I)
             if res:
                 self._res_from_action(res, pline, founds)
@@ -128,7 +147,7 @@ class ApexCodeState:
 
 
 def bastypsea(fp, input_obj: str, input_act: str, ignore_test: bool=True) -> list:
-    code_state = ApexCodeState(input_obj)
+    code_state = ApexCodeState(input_obj, input_act)
     founds = []
 
     while True:
@@ -136,26 +155,10 @@ def bastypsea(fp, input_obj: str, input_act: str, ignore_test: bool=True) -> lis
         if not line:
             break
 
-        # separate lines according to DELIMS
-        part_lines = []
-        part_delims = []
-        part_start = 0
-        for i in range(len(line)):
-            for j, delim in enumerate(code_state.DELIMS):
-                i_plus = i + len(delim)
-                if line[i: i_plus] == delim:
-                    part_lines.append(line[part_start: i_plus])
-                    part_delims.append(j)
-                    part_start = i_plus
-        part_lines.append(line[part_start: len(line)])
-        part_delims.append(-1)
-
         # bastypsea proper
         # https://www.youtube.com/watch?v=mCeosicdJDI
-        for i, pl in enumerate(part_lines):
-            code_state.upd_from_pline(pl, part_delims[i], input_obj, input_act, founds, ignore_test)
-            if ignore_test and code_state.is_test_class:
-                return founds
+        if code_state.proc_line(line, founds, ignore_test):
+            return founds
         code_state.upd_from_newline()
     return founds
 
@@ -171,10 +174,10 @@ if __name__ == '__main__':
     my_act = 'Insert'
     my_path = r'./testdata/*.cls'
 
-    founds = {}
-
     tic = time.perf_counter()
+    founds = {}
     classes = [f for f in glob(my_path) if isfile(f)]
+
     for i in classes:
         with open(i, 'r', encoding='utf-8') as fp:
             outputs = bastypsea(fp, my_obj, my_act)

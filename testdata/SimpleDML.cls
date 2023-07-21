@@ -1,5 +1,5 @@
 /*
-These test data are not assumed to work--just to be Apex-like.
+These test data are not assumed to work, but just to be Apex-like.
 
 Distributed under the MIT software license. See the accompanying
 file LICENSE or https://opensource.org/license/mit/.
@@ -16,3 +16,4 @@ public class SimpleDML extends ParentClass {
         daTabAse.INseRTiMmEDiatE(y, false); insErT x;
     }
 }
+

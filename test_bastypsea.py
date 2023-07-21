@@ -21,8 +21,8 @@ def test_SimpleDML():
 
 
 def test_ComplexTypes():
-    expected = [{'init_line_n': 16, 'line_n': 24, 'pline': '        UPSERT x.cuteAcc;'},
-                {'init_line_n': 17, 'line_n': 25, 'pline': '        Database.upsert(mapX2Y.keys(), true);'}]
+    expected = [{'init_line_n': 15, 'line_n': 23, 'pline': '        UPSERT x.cuteAcc;'},
+                {'init_line_n': 16, 'line_n': 24, 'pline': '        Database.upsert(mapX2Y.keys(), true);'}]
 
     with open('./testdata/ComplexTypes.cls', 'r', encoding='utf-8') as fp:
         outputs = bastypsea(fp, 'Opportunity', 'Upsert')
@@ -30,3 +30,4 @@ def test_ComplexTypes():
     assert len(outputs) == 2
     for i in outputs:
         assert i in expected
+

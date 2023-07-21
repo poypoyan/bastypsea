@@ -1,12 +1,11 @@
 /*
-These test data are not assumed to work--just to be Apex-like.
+These test data are not assumed to work, but just to be Apex-like.
 
 Distributed under the MIT software license. See the accompanying
 file LICENSE or https://opensource.org/license/mit/.
 */
 
 public class ComplexTypes {
-    // Inner Class
     public class SampleClass {
         public Boolean isCute {get; set;}
         public Account cuteAcc {get; set;}
@@ -25,3 +24,4 @@ public class ComplexTypes {
         Database.upsert(mapX2Y.keys(), true);
     }
 }
+
