@@ -188,4 +188,3 @@ if __name__ == '__main__':
 
     print(f"Completed in {toc - tic:0.6f} seconds")
     pprint(founds)
-

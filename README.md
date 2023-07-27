@@ -42,4 +42,3 @@ or `python3 bastypsea.py` (Linux)
 ## License
 Distributed under the MIT software license. See the accompanying
 file LICENSE or https://opensource.org/license/mit/.
-

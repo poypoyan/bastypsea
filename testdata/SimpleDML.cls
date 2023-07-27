@@ -16,4 +16,3 @@ public class SimpleDML extends ParentClass {
         daTabAse.INseRTiMmEDiatE(y, false); insErT x;
     }
 }
-

@@ -24,4 +24,3 @@ public class ComplexTypes {
         Database.upsert(mapX2Y.keys(), true);
     }
 }
-

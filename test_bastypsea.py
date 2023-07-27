@@ -1,3 +1,6 @@
+# Distributed under the MIT software license. See the accompanying
+# file LICENSE or https://opensource.org/license/mit/.
+
 from bastypsea import bastypsea
 
 
@@ -30,4 +33,3 @@ def test_ComplexTypes():
     assert len(outputs) == 2
     for i in outputs:
         assert i in expected
-
