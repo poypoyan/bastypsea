@@ -6,6 +6,8 @@ file LICENSE or https://opensource.org/license/mit/.
 */
 
 public class ComplexTypes {
+    private SampleClass y;
+
     public class SampleClass {
         public Boolean isCute {get; set;}
         public Account cuteAcc {get; set;}
@@ -16,11 +18,11 @@ public class ComplexTypes {
         Map<Account, Opportunity> mapX2Y = new Map<Account, Opportunity>();
         mapX2Y.put(x.cuteAcc, x.cuteOpp);
 
-        // false positives are allowed
         /*
         // <-- this may trick parser --> } Database.upsert(x); 
         */
-        UPSERT x.cuteAcc;
-        Database.upsert(mapX2Y.keys(), true);
+        UPSERT x.cuteAcc;   // false positives are allowed
+        Database.upsert( mapX2Y.keys(), true );
+        UPSERT y;
     }
 }
