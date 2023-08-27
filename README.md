@@ -11,8 +11,9 @@ easily understood for porting to other languages.
 
 **Instruction for Python prototype:**
 1) Download the whole Apex codebase of your project.
-2) Download bastypsea.py
-3) Edit the Python script here:
+2) Download the source code (zip or tarball, whatever's more familiar to you) in [Releases](../../releases).
+3) Extract bastypsea.py.
+4) Edit the Python script here:
 ```Python
 my_obj = 'Contact'   # the SObject
 my_act = 'Insert'   # the database action
@@ -25,8 +26,13 @@ by appending `False` as argument to the `bastypsea()` call:
 ```Python
 outputs = bastypsea(file_name, my_obj, my_act, False)
 ```
-4) Just run Python in terminal: `python bastypsea.py` (Windows)
-or `python3 bastypsea.py` (Linux)
+5) Just run Python in terminal: `python bastypsea.py` (Windows)
+or `python3 bastypsea.py` (Linux).
+
+**Instruction for JAR file:**
+1) Download the whole Apex codebase of your project.
+2) Download the JAR file in [Releases](../../releases).
+3) Just run `java -jar bastypsea.jar` to display usage.
 
 **Limitations:**
 1) Cannot detect multiline variable declarations and database actions
