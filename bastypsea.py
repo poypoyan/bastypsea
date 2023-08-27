@@ -170,17 +170,10 @@ def _bastypsea_full(filename: str, code_state: ApexCodeState, last_line: int) ->
     with open(filename, 'r', encoding='utf-8') as fp:
         while True:
             line = fp.readline()
-            if not line:
-                break
-
             # bastypsea proper
             # https://www.youtube.com/watch?v=mCeosicdJDI
-            if code_state.proc_line_stop(line, founds):
-                return founds
-
-            if code_state.line == last_line:
+            if not line or code_state.proc_line_stop(line, founds) or code_state.line == last_line:
                 break
-
             code_state.upd_from_newline()
     return founds
 
