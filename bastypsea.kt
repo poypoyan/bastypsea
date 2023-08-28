@@ -9,6 +9,8 @@ Run command: java -jar bastypsea.jar
 Distributed under the MIT software license. See the accompanying
 file LICENSE or https://opensource.org/license/mit/.
 */
+package org.bastypsea
+
 import kotlin.io.path.Path
 import kotlin.io.path.listDirectoryEntries
 import java.nio.file.Path
@@ -193,7 +195,7 @@ private fun _bastypseaFull(path: Path, codeState: ApexCodeState, lastLine: Int):
     return founds
 }
 
-fun bastypsea(path: Path, inputObj: String, inputAct: String, ignoreTest: Boolean = true): MutableList<OutputEntry> {
+fun btsRun(path: Path, inputObj: String, inputAct: String, ignoreTest: Boolean = true): MutableList<OutputEntry> {
     val codeState = ApexCodeState(path, inputObj, inputAct, ignoreTest)
     return _bastypseaFull(path, codeState, -1)
 }
@@ -229,7 +231,7 @@ fun main(args: Array<String>) {
     classes.forEach {cls ->
         var isIgnoreTest = true
         if (args.size == 4) isIgnoreTest = false
-        val outputs = bastypsea(cls, args[0], args[1], isIgnoreTest)
+        val outputs = btsRun(cls, args[0], args[1], isIgnoreTest)
 
         if (outputs.size > 0) {
             println(cls.toString() + ":")
