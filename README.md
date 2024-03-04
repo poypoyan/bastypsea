@@ -1,9 +1,14 @@
 # bastypsea
 Basic Type Search for Apex language
 
-This is for use in Salesforce Apex code debugging/investigation.
-Given an SObject and a database action, this tool finds lines in Apex code
+This is for use in Salesforce Apex code debugging/investigation/refactoring.
+
+Do you want to find lines in your codebase (stored in your local env) wherein
+an `Opportunity` is Inserted? Updated? Deleted? If yes, then this tool is for you!
+
+In general, given an SObject and a database action, this tool finds lines in Apex classes
 where there is a database action for a variable of type "that SObject".
+
 By default, this ignores test classes.
 
 This is written to be easy to modify for other purposes, and to be
