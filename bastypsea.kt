@@ -228,19 +228,19 @@ fun main(args: Array<String>) {
         return
     }
 
+    println("------")
     classes.forEach {cls ->
         var isIgnoreTest = true
         if (args.size == 4) isIgnoreTest = false
         val outputs = btsRun(cls, args[0], args[1], isIgnoreTest)
 
         if (outputs.size > 0) {
-            println(cls.toString() + ":")
             outputs.forEach {
                 println(
                 """
-                initN: ${it.initLineN}
-                lineN: ${it.lineN}
-                pline: ${it.pline}
+                ini N: ${cls.toString() + ":" + it.initLineN}
+                act N: ${cls.toString() + ":" + it.lineN}
+                act L: ${it.pline}
                 ------
                 """.trimIndent()
                 )
