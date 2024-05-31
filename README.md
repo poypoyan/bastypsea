@@ -39,6 +39,21 @@ or `python3 bastypsea.py` (Linux).
 2) Download the JAR file in [Releases](../../releases).
 3) Just run `java -jar bastypsea.jar` to display usage.
 
+Here's a sample output:
+```
+$ java -jar bastypsea.jar Contact Insert ./testdata/
+------
+ini N: ./testdata/SimpleDML.cls:10
+act N: ./testdata/SimpleDML.cls:16
+act L: daTabAse.INseRTiMmEDiatE(y, false);
+------
+ini N: ./testdata/SimpleDML.cls:9
+act N: ./testdata/SimpleDML.cls:16
+act L: insErT x;
+------
+```
+Where `ini N` is the line number where initialization of variable occurs, `act N` is the line number where the database action occurs, and `act L` is the actual line of `act N`.
+
 **Limitations:**
 1) Cannot detect multiline variable declarations and database actions
    (e.g. when data type and variable name are in different lines).
