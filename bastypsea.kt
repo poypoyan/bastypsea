@@ -201,19 +201,33 @@ fun btsRun(path: Path, inputObj: String, inputAct: String, ignoreTest: Boolean =
 }
 
 fun main(args: Array<String>) {
-    val help =
+    val HELP =
     """
-    Usage: bastypsea.jar <Object> <Action> <Path> ["addTest"]
+    Usage: bastypsea.jar <Object> <Action> <Path> [addTest] [showFullPath]
 
     Note that Path can be a directory like "./classes/" or
     a file like "./classes/MyApexClass.cls". For the case
     of directory, only .cls files are scanned.
     """.trimIndent()
     val classes: List<Path>
+    var isIgnoreTest = true
+    var isShowFullPath = false
 
-    if (!(args.size in 3..4) || (args.size == 4 && args[3] != "addTest")) {
-        println(help)
+    if (!(args.size in 3..5)) {
+        println(HELP)
         return
+    }
+    for (i in 4..5) {
+        if (args.size >= i) {
+            if (args[i - 1] == "addTest") {
+                isIgnoreTest = false
+            } else if (args[i - 1] == "showFullPath") {
+                isShowFullPath = true
+            } else {
+                println(HELP)
+                return
+            }
+        }
     }
 
     val path = Path(args[2])
@@ -228,23 +242,24 @@ fun main(args: Array<String>) {
         return
     }
 
-    println("------")
+    var hasPrinted = false
     classes.forEach {cls ->
-        var isIgnoreTest = true
-        if (args.size == 4) isIgnoreTest = false
         val outputs = btsRun(cls, args[0], args[1], isIgnoreTest)
 
         if (outputs.size > 0) {
+            if (!hasPrinted) hasPrinted = true
+            val clsOut = if (isShowFullPath) cls.toRealPath() else cls
             outputs.forEach {
                 println(
                 """
-                ini N: ${cls.toString() + ":" + it.initLineN}
-                act N: ${cls.toString() + ":" + it.lineN}
-                act L: ${it.pline}
                 ------
+                ini N: ${clsOut.toString() + ":" + it.initLineN}
+                act N: ${clsOut.toString() + ":" + it.lineN}
+                act L: ${it.pline}
                 """.trimIndent()
                 )
             }
         }
     }
+    if (hasPrinted) println("------")
 }
