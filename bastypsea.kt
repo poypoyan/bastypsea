@@ -208,6 +208,10 @@ fun main(args: Array<String>) {
     Note that Path can be a directory like "./classes/" or
     a file like "./classes/MyApexClass.cls". For the case
     of directory, only .cls files are scanned.
+
+    If Path is just "." and "./force-app/main/default/classes"
+    exists, scanning will be performed in classes directory.
+    This is for ease in working with SFDX projects.
     """.trimIndent()
     val classes: List<Path>
     var isIgnoreTest = true
@@ -230,8 +234,11 @@ fun main(args: Array<String>) {
         }
     }
 
-    val path = Path(args[2])
-    if (!Files.exists(path)) {
+    var path = Path(args[2])
+    if (args[2] == ".") {
+        val sfdxPath = Path("./force-app/main/default/classes")
+        if (Files.exists(sfdxPath)) path = sfdxPath
+    } else if (!Files.exists(path)) {
         System.err.println("Error: path does not exist.")
         return
     }

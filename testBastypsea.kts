@@ -1,6 +1,6 @@
 /*
 Test bastypsea Kotlin.
-Run command: kotlinc -cp bastypsea.jar testBastypsea.kts
+Run command: kotlin -cp bastypsea.jar testBastypsea.kts
 
 Distributed under the MIT software license. See the accompanying
 file LICENSE or https://opensource.org/license/mit/.
