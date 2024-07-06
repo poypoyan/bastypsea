@@ -147,7 +147,7 @@ class ApexCodeState(val PATH: Path, val OBJ: String, val ACT: String, val IS_IGN
 
     private fun _checkVarInit(pline: String): MatchResult? {
         for (i in this.types) {
-            val rgxVarInit = Regex("[a-z0-9_,<>\\s]*${i}[a-z0-9_,<>\\s]*\\s+([a-z0-9_]+)", RegexOption.IGNORE_CASE)
+            val rgxVarInit = Regex("[,<(\\s]${i}[>\\[\\]]*\\s+([a-z0-9_]+)", RegexOption.IGNORE_CASE)
             val res = rgxVarInit.find(pline)
             if (res?.groupValues != null) return res
         }

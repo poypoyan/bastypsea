@@ -22,12 +22,18 @@ def test_SimpleDML():
 
 
 def test_ComplexTypes():
-    expected = [{'init_line_n': 17, 'line_n': 24, 'pline': '        UPSERT x.cuteAcc;'},
-                {'init_line_n': 18, 'line_n': 25, 'pline': '        Database.upsert( mapX2Y.keys(), true );'},
-                {'init_line_n': 9, 'line_n': 26, 'pline': '        UPSERT y;'}]
+    expected = [{'init_line_n': 17, 'line_n': 27, 'pline': '        UPSERT x.cuteAcc;'},
+                {'init_line_n': 19, 'line_n': 28, 'pline': '        Database.upsert( testMap, true );'},
+                {'init_line_n': 9, 'line_n': 29, 'pline': '        UPSERT y;'},
+                {'init_line_n': 22, 'line_n': 30, 'pline': '        upsert z;'}]
 
     outputs = bastypsea('./testdata/ComplexTypes.cls', 'Opportunity', 'Upsert')
 
-    assert len(outputs) == 3
+    assert len(outputs) == 4
     for i in outputs:
         assert i in expected
+
+def test_ObjectNamesSubString():
+    outputs = bastypsea('./testdata/ObjectNamesSubString.cls', 'Obj__c', 'Update')
+
+    assert len(outputs) == 0

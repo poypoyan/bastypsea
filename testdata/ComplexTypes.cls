@@ -14,15 +14,19 @@ public class ComplexTypes {
         public Opportunity cuteOpp {get; set;}
     }
 
-    public void method0(Id w, SampleClass x) {
-        Map<Account, Opportunity> mapX2Y = new Map<Account, Opportunity>();
+    public void method0(SampleClass x, Id w) {
+        // for maps, only values are captured
+        Map<String, Opportunity> testMap = new Map<String, Opportunity>();
         mapX2Y.put(x.cuteAcc, x.cuteOpp);
+
+        Opportunity[] z = new Opportunity[]{};
 
         /*
         // <-- this may trick parser --> } Database.upsert(x); 
         */
         UPSERT x.cuteAcc;   // false positives are allowed
-        Database.upsert( mapX2Y.keys(), true );
+        Database.upsert( testMap, true );
         UPSERT y;
+        upsert z;
     }
 }

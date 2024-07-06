@@ -35,18 +35,26 @@ fun testSimpleDML() {
 
 fun testComplexTypes() {
     val expected = arrayOf<OutputEntry>(
-        OutputEntry(17, 24, "UPSERT x.cuteAcc;"),
-        OutputEntry(18, 25, "Database.upsert( mapX2Y.keys(), true );"),
-        OutputEntry(9, 26, "UPSERT y;"),
+        OutputEntry(17, 27, "UPSERT x.cuteAcc;"),
+        OutputEntry(19, 28, "Database.upsert( testMap, true );"),
+        OutputEntry(9, 29, "UPSERT y;"),
+        OutputEntry(22, 30, "upsert z;"),
     )
     val outputs = btsRun(Path("./testdata/ComplexTypes.cls"), "Opportunity", "Upsert")
 
-    if (!(outputs.size == 3)) throw AssertException()
+    if (!(outputs.size == 4)) throw AssertException()
     for (i in outputs) {
         if(!(i in expected)) throw AssertException()
     }
 }
 
+fun testObjectNamesSubString() {
+    val outputs = btsRun(Path("./testdata/ObjectNamesSubString.cls"), "Obj__c", "Update")
+
+    if (!(outputs.size == 0)) throw AssertException()
+}
+
 testUnitTest()
 testSimpleDML()
 testComplexTypes()
+testObjectNamesSubString()

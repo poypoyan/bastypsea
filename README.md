@@ -58,14 +58,14 @@ Where `ini N` is the line number where initialization of variable occurs, `act N
 1) Cannot detect multiline variable declarations and database actions
    (e.g. when data type and variable name are in different lines).
    Hence, misses are possible for this. *But why would you even do that?*
-2) There are no further checks for variable declarations of more complex
+2) Cannot detect the SObject as the type of *Map keys*.
+   Hence, misses are possible for this. Again, *why oh why?*
+3) There are no further checks for variable declarations of more complex
    data types like Inner Classes, Maps, etc.
    Hence, false positives are possible for this.
-3) Scope of variable declarations and actions are not considered
+4) Scope of variable declarations and actions are not considered
    (e.g. the action is inside which method).
    Hence, false positives are possible for this.
-4) For all database actions, it is assumed that only one variable is inputted.
-   Hence, misses are possible for this.
 
 ## License
 Distributed under the MIT software license. See the accompanying

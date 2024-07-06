@@ -128,7 +128,7 @@ class ApexCodeState:
 
     def _check_var_init(self, pline: str) -> re.Match:
         for i in self.types:
-            rgx_var_init = f'[a-z0-9_,<>\\s]*{ i }[a-z0-9_,<>\\s]*\\s+([a-z0-9_]+)'
+            rgx_var_init = f'[,<(\\s]{ i }[>\\[\\]]*\\s+([a-z0-9_]+)'
             res = re.search(rgx_var_init, pline, re.I)
             if res:
                 return res
@@ -190,8 +190,8 @@ from pprint import pprint
 
 
 if __name__ == '__main__':
-    my_obj = 'Contact'
-    my_act = 'Insert'
+    my_obj = 'Opportunity'
+    my_act = 'Upsert'
     my_path = r'./testdata/*.cls'
 
     tic = time.perf_counter()
