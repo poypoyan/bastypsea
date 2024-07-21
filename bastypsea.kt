@@ -31,6 +31,7 @@ class ApexCodeState(val PATH: Path, val OBJ: String, val ACT: String, val IS_IGN
 
     private val _RGX_CLASS = Regex("^[a-z\\s]+\\sclass\\s+([a-z0-9_]+)", RegexOption.IGNORE_CASE)
     private val _RGX_DMLS = arrayOf<Regex?>(null, null)
+    private val _RGX_DMLS_STR = arrayOf<Regex?>(null, null)
     private var _lastDelim = -1
     private var _curlyBracketCtr = 0
     private var _candInnerClass = ""
@@ -42,8 +43,10 @@ class ApexCodeState(val PATH: Path, val OBJ: String, val ACT: String, val IS_IGN
         if (ACT == "")
             IS_CHECK_VAR_ONLY = true
         else {
-            _RGX_DMLS[0] = Regex("[^.]${ACT}\\s+([a-z0-9_]+)", RegexOption.IGNORE_CASE)   // DML
+            _RGX_DMLS[0] = Regex("${ACT}\\s+([a-z0-9_]+)", RegexOption.IGNORE_CASE)   // DML
             _RGX_DMLS[1] = Regex("Database.${ACT}[a-z]*\\s*\\(\\s*([a-z0-9_]+)", RegexOption.IGNORE_CASE)   // Database method
+            _RGX_DMLS_STR[0] = Regex("${ACT}\\s+\\[\\s*SELECT[a-z0-9_,\\s]+FROM\\s+${OBJ}", RegexOption.IGNORE_CASE)   // DML straight from SOQL
+            _RGX_DMLS_STR[1] = Regex("Database.${ACT}[a-z]*\\s*\\(\\s*\\[\\s*SELECT[a-z0-9_,\\s]+FROM\\s+${OBJ}", RegexOption.IGNORE_CASE)   // Database method straight
         }
     }
 
@@ -142,14 +145,27 @@ class ApexCodeState(val PATH: Path, val OBJ: String, val ACT: String, val IS_IGN
             }
         }
 
+        // search for action 2 (straight from SOQL)
+        for (i in this._RGX_DMLS_STR) {
+            val resDML = i?.find(pline)
+            if (resDML?.groupValues != null) {
+                founds.add(OutputEntry(this.line, this.line, pline.trimIndent()))
+                this._updFromDelim(delim)
+                return
+            }
+        }
+
         this._updFromDelim(delim)
     }
 
     private fun _checkVarInit(pline: String): MatchResult? {
         for (i in this.types) {
-            val rgxVarInit = Regex("[,<(\\s]${i}[>\\[\\]]*\\s+([a-z0-9_]+)", RegexOption.IGNORE_CASE)
+            val rgxVarInit = Regex("[,<(\\s]+${i}[>\\[\\]]*\\s+([a-z0-9_]+)", RegexOption.IGNORE_CASE)
             val res = rgxVarInit.find(pline)
-            if (res?.groupValues != null) return res
+            if (res?.groupValues != null
+            && (res.range.start < 4 || !"from".equals(pline.substring(res.range.start - 4..<res.range.start), ignoreCase = true))) {   // prevent when inside SOQL
+                return res
+            }
         }
         return null
     }

@@ -33,6 +33,19 @@ fun testSimpleDML() {
     }
 }
 
+fun testSimpleDML2() {
+    val expected = arrayOf<OutputEntry>(
+        OutputEntry(18, 18, "DeLeTE [SELECT Id FROM  Contact LIMIT 5];"),
+        OutputEntry(19, 19, "database.deleteAsync([SELECT Id FROM Contact LIMIT 5]);"),
+    )
+    val outputs = btsRun(Path("./testdata/SimpleDML.cls"), "Contact", "Delete")
+
+    if (!(outputs.size == 2)) throw AssertException()
+    for (i in outputs) {
+        if(!(i in expected)) throw AssertException()
+    }
+}
+
 fun testComplexTypes() {
     val expected = arrayOf<OutputEntry>(
         OutputEntry(17, 27, "UPSERT x.cuteAcc;"),
@@ -56,5 +69,6 @@ fun testObjectNamesSubString() {
 
 testUnitTest()
 testSimpleDML()
+testSimpleDML2()
 testComplexTypes()
 testObjectNamesSubString()

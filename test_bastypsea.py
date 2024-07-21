@@ -21,6 +21,16 @@ def test_SimpleDML():
         assert i in expected
 
 
+def test_SimpleDML2():
+    expected = [{'init_line_n': 18, 'line_n': 18, 'pline': '        DeLeTE [SELECT Id FROM  Contact LIMIT 5];'},
+                {'init_line_n': 19, 'line_n': 19, 'pline': '        database.deleteAsync([SELECT Id FROM Contact LIMIT 5]);'}]
+    outputs = bastypsea('./testdata/SimpleDML.cls', 'Contact', 'Delete')
+
+    assert len(outputs) == 2
+    for i in outputs:
+        assert i in expected
+
+
 def test_ComplexTypes():
     expected = [{'init_line_n': 17, 'line_n': 27, 'pline': '        UPSERT x.cuteAcc;'},
                 {'init_line_n': 19, 'line_n': 28, 'pline': '        Database.upsert( testMap, true );'},

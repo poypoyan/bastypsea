@@ -22,6 +22,7 @@ class ApexCodeState:
 
         self._RGX_CLASS = '^[a-z\\s]+\\sclass\\s+([a-z0-9_]+)'
         self._RGX_DMLS = ['', '']
+        self._RGX_DMLS_STR = ['', '']
         self._last_delim = -1
         self._curly_bracket_ctr = 0
         self._cand_inner_class = ''
@@ -32,8 +33,10 @@ class ApexCodeState:
         if act == '':
             self.IS_CHECK_VAR_ONLY = True
         else:
-            self._RGX_DMLS[0] = f'[^.]{ act }\\s+([a-z0-9_]+)'   # DML
+            self._RGX_DMLS[0] = f'{ act }\\s+([a-z0-9_]+)'   # DML
             self._RGX_DMLS[1] = f'Database.{ act }[a-z]*\\s*\\(\\s*([a-z0-9_]+)'   # Database method
+            self._RGX_DMLS_STR[0] = f'{ act }\\s+\\[\\s*SELECT[a-z0-9_,\\s]+FROM\\s+{ obj }'   # DML straight from SOQL
+            self._RGX_DMLS_STR[1] = f'Database.{ act }[a-z]*\\s*\\(\\s*\\[\\s*SELECT[a-z0-9_,\\s]+FROM\\s+{ obj }'   # Database method straight
 
     def proc_line_stop(self, line: str, founds: list) -> bool:
         STOP = True
@@ -124,13 +127,25 @@ class ApexCodeState:
                 self._upd_from_delim(delim)
                 return
 
+        # search for action 2 (straight from SOQL)
+        for i in self._RGX_DMLS_STR:
+            res = re.search(i, pline, re.I)
+            if res:
+                founds.append({
+                    'line_n': self.line,
+                    'init_line_n': self.line,
+                    'pline': pline
+                })
+                self._upd_from_delim(delim)
+                return
+
         self._upd_from_delim(delim)
 
     def _check_var_init(self, pline: str) -> re.Match:
         for i in self.types:
-            rgx_var_init = f'[,<(\\s]{ i }[>\\[\\]]*\\s+([a-z0-9_]+)'
+            rgx_var_init = f'[,<(\\s]+{ i }[>\\[\\]]*\\s+([a-z0-9_]+)'
             res = re.search(rgx_var_init, pline, re.I)
-            if res:
+            if res and (res.start() < 4 or 'from' != pline[res.start() - 4: res.start()].casefold()):   # prevent when inside SOQL
                 return res
         return None
 
