@@ -54,6 +54,12 @@ act L: insErT x;
 ```
 Where `ini N` is the line number where initialization of variable occurs, `act N` is the line number where the database action occurs, and `act L` is the actual line of `act N`.
 
+The outputs of JAR file are designed so that paths are clickable in VS Code terminals. This leads us to...
+
+**Adding JAR file to VS Code Terminal PATH environment variable:**
+
+Copy the bastypsea.jar to a directory path, then [add that path to VS Code Terminal PATH](AddDirpath.md).
+
 **Limitations:**
 1) Cannot detect multiline variable declarations and database actions
    (e.g. when data type and variable name are in different lines).
