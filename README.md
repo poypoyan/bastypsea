@@ -56,9 +56,9 @@ Where `ini N` is the line number where initialization of variable occurs, `act N
 
 The outputs of JAR file are designed so that paths are clickable in VS Code terminals. This leads us to...
 
-**Adding JAR file to VS Code Terminal PATH environment variable:**
+**Adding JAR file to a VS Code terminal environment variable:**
 
-Copy the bastypsea.jar to a directory path, then [add that path to VS Code Terminal PATH](AddDirpath.md).
+Copy the bastypsea.jar to a directory path, then [follow these steps](AddDirpath.md).
 
 **Limitations:**
 1) Cannot detect multiline variable declarations and database actions

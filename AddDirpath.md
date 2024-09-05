@@ -1,4 +1,4 @@
-## Adding Directory Path to VSCode Terminal PATH Environment Variable
+## Adding File Path to a VSCode Terminal Environment Variable
 
 1. Run VS Code/Codium.
 2. Go to File Menu > Preference > Settings, or just press `Ctrl + ,`.
@@ -9,20 +9,21 @@
         ...
     },
 ```
-Then add or edit the "PATH" key:
-- For Linux and OS X, just add "PATH" key if not exists, or append to its value the **absolute** path for your directory, like this:
+Then add a new environment variable:
+- For Linux and OS X, just add "bastypsea" key, and insert the **absolute** file path, like this:
 ```JavaScript
     "terminal.integrated.env.<your os>": {
-        "PATH": "${env:PATH}:/home/SamplePC/Documents/MyDir"
+        "bastypsea": "/home/SamplePC/Documents/MyDir/bastypsea.jar"
         ...
     },
 ```
-- For Windows, just add "PATH" key if not exists, or append to its value the **absolute** path for your directory such that backslashes are doubled to escape it, like this:
+- For Windows, just add "bastypsea" key, and insert the **absolute** file path such that backslashes are doubled to escape it, like this:
 ```JavaScript
     "terminal.integrated.env.<your os>": {
-        "PATH": "${env:PATH};C:\\Users\\SamplePC\\Documents\\MyDir"
+        "bastypsea": "C:\\Users\\SamplePC\\Documents\\MyDir\\bastypsea.jar"
         ...
     },
 ```
 5. Save the settings.json.
-6. Spin up a new terminal by going to Terminal Menu > New Terminal, or just press `` Ctrl + Shift + ` ``. That terminal should have the updated PATH environment variable.
+6. Spin up a new terminal by going to Terminal Menu > New Terminal, or just press `` Ctrl + Shift + ` ``. That terminal should have the new environment variable.
+7. To run the JAR: `java -jar $bastypsea ...` for Linux and OS X, and `java -jar ${env:bastypsea} ...` for Windows.
