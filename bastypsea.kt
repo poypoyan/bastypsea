@@ -32,12 +32,12 @@ class ApexCodeState(val PATH: Path, val OBJ: String, val ACT: String, val IS_IGN
     private val _RGX_CLASS = Regex("^[a-z\\s]+\\sclass\\s+([a-z0-9_]+)", RegexOption.IGNORE_CASE)
     private val _RGX_DMLS = arrayOf<Regex?>(null, null)
     private val _RGX_DMLS_STR = arrayOf<Regex?>(null, null)
-    private var _lastDelim = -1
     private var _curlyBracketCtr = 0
     private var _candInnerClass = ""
     private var _lineInnerClass = 0
     private var _isInOuterClass = false
     private var _isInInnerClass = false
+    private var _isOneLineComment = false
 
     init {
         if (ACT == "")
@@ -182,7 +182,7 @@ class ApexCodeState(val PATH: Path, val OBJ: String, val ACT: String, val IS_IGN
     }
 
     private fun _updFromDelim(delim: Int) {
-        if (delim in 0..<3) this._lastDelim = delim
+        if (delim == 0 && !this.isComment) this._isOneLineComment = true   // ignore one line comment inside multiline
         when (delim) {
             0, 1 -> this.isComment = true
             2 -> this.isComment = false
@@ -191,7 +191,7 @@ class ApexCodeState(val PATH: Path, val OBJ: String, val ACT: String, val IS_IGN
 
     fun updFromNewLine() {
         this.line += 1
-        if (this._lastDelim == 0) this.isComment = false
+        if (this._isOneLineComment) this.isComment = false
     }
 }
 

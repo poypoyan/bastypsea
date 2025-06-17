@@ -12,8 +12,8 @@ def test_UnitTest():
 
 
 def test_SimpleDML():
-    expected = [{'init_line_n': 10, 'line_n': 16, 'pline': '        daTabAse.INseRTiMmEDiatE(y, false);'},
-                {'init_line_n': 9, 'line_n': 16, 'pline': ' insErT x;'}]
+    expected = [{'init_line_n': 10, 'line_n': 20, 'pline': '        daTabAse.INseRTiMmEDiatE(y, false);'},
+                {'init_line_n': 9, 'line_n': 20, 'pline': ' insErT x;'}]
     outputs = bastypsea('./testdata/SimpleDML.cls', 'Contact', 'Insert')
 
     assert len(outputs) == 2
@@ -22,8 +22,8 @@ def test_SimpleDML():
 
 
 def test_SimpleDML2():
-    expected = [{'init_line_n': 18, 'line_n': 18, 'pline': '        DeLeTE [SELECT Id FROM  Contact LIMIT 5];'},
-                {'init_line_n': 19, 'line_n': 19, 'pline': '        database.deleteAsync([SELECT Id FROM Contact LIMIT 5]);'}]
+    expected = [{'init_line_n': 22, 'line_n': 22, 'pline': '        DeLeTE [SELECT Id FROM  Contact LIMIT 5];'},
+                {'init_line_n': 23, 'line_n': 23, 'pline': '        database.deleteAsync([SELECT Id FROM Contact LIMIT 5]);'}]
     outputs = bastypsea('./testdata/SimpleDML.cls', 'Contact', 'Delete')
 
     assert len(outputs) == 2

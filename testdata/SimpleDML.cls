@@ -12,7 +12,11 @@ public class SimpleDML extends ParentClass {
             LastName = 'the Builder'
         );
 
-        // INSERT x; <-- this may trick parser
+        /*
+            // this may trick parser
+            insert y;
+        */
+        // INSERT x; this may trick parser
         daTabAse.INseRTiMmEDiatE(y, false); insErT x;
 
         DeLeTE [SELECT Id FROM  Contact LIMIT 5];

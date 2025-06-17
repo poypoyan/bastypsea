@@ -23,12 +23,12 @@ class ApexCodeState:
         self._RGX_CLASS = '^[a-z\\s]+\\sclass\\s+([a-z0-9_]+)'
         self._RGX_DMLS = ['', '']
         self._RGX_DMLS_STR = ['', '']
-        self._last_delim = -1
         self._curly_bracket_ctr = 0
         self._cand_inner_class = ''
         self._line_inner_class = 0
         self._is_in_outer_class = False
         self._is_in_inner_class = False
+        self._is_one_line_comment = False
 
         if act == '':
             self.IS_CHECK_VAR_ONLY = True
@@ -162,12 +162,10 @@ class ApexCodeState:
         return False
 
     def _upd_from_delim(self, delim: int) -> None:
-        if 0 <= delim < 3:
-            self._last_delim = delim
+        if delim == 0 and not self.is_comment:   # ignore one line comment inside multiline
+            self._is_one_line_comment = True
 
-        if delim == 0:
-            self.is_comment = True
-        elif delim == 1:
+        if delim == 0 or delim == 1:
             self.is_comment = True
         elif delim == 2:
             self.is_comment = False
@@ -175,7 +173,7 @@ class ApexCodeState:
     def upd_from_newline(self) -> None:
         self.line += 1
 
-        if self._last_delim == 0:
+        if self._is_one_line_comment:
             self.is_comment = False
 
 

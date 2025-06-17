@@ -22,8 +22,8 @@ fun testUnitTest() {
 
 fun testSimpleDML() {
     val expected = arrayOf<OutputEntry>(
-        OutputEntry(10, 16, "daTabAse.INseRTiMmEDiatE(y, false);"),
-        OutputEntry(9, 16, "insErT x;"),
+        OutputEntry(10, 20, "daTabAse.INseRTiMmEDiatE(y, false);"),
+        OutputEntry(9, 20, "insErT x;"),
     )
     val outputs = btsRun(Path("./testdata/SimpleDML.cls"), "Contact", "Insert")
 
@@ -35,8 +35,8 @@ fun testSimpleDML() {
 
 fun testSimpleDML2() {
     val expected = arrayOf<OutputEntry>(
-        OutputEntry(18, 18, "DeLeTE [SELECT Id FROM  Contact LIMIT 5];"),
-        OutputEntry(19, 19, "database.deleteAsync([SELECT Id FROM Contact LIMIT 5]);"),
+        OutputEntry(22, 22, "DeLeTE [SELECT Id FROM  Contact LIMIT 5];"),
+        OutputEntry(23, 23, "database.deleteAsync([SELECT Id FROM Contact LIMIT 5]);"),
     )
     val outputs = btsRun(Path("./testdata/SimpleDML.cls"), "Contact", "Delete")
 
