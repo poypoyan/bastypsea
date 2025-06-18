@@ -12,6 +12,7 @@ public class SimpleDML extends ParentClass {
             LastName = 'the Builder'
         );
 
+        // a one line comment
         /*
             // this may trick parser
             insert y;

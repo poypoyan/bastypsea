@@ -175,6 +175,7 @@ class ApexCodeState:
 
         if self._is_one_line_comment:
             self.is_comment = False
+            self._is_one_line_comment = False
 
 
 def _bastypsea_full(filename: str, code_state: ApexCodeState, last_line: int) -> list:

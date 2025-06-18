@@ -191,7 +191,10 @@ class ApexCodeState(val PATH: Path, val OBJ: String, val ACT: String, val IS_IGN
 
     fun updFromNewLine() {
         this.line += 1
-        if (this._isOneLineComment) this.isComment = false
+        if (this._isOneLineComment) {
+            this.isComment = false
+            this._isOneLineComment = false
+        }
     }
 }
 
