@@ -29,6 +29,7 @@ class ApexCodeState(val PATH: Path, val OBJ: String, val ACT: String, val IS_IGN
     var line = 1
     var isComment = false
     var isTestClass = false
+    var isTrigger = false
 
     private val _RGX_CLASS = Regex("^[a-z\\s]+\\sclass\\s+([a-z0-9_]+)", RegexOption.IGNORE_CASE)
     private val _RGX_DMLS = arrayOf<Regex?>(null, null)
@@ -91,10 +92,11 @@ class ApexCodeState(val PATH: Path, val OBJ: String, val ACT: String, val IS_IGN
 
         // search for outer class init
         val resOutClass = this._RGX_CLASS.find(pline)
-        if (!this._isInOuterClass) {
+        if (!(this._isInOuterClass || this.isTrigger)) {
             // check if test class
             if (pline.contains("@istest", ignoreCase = true)) this.isTestClass = true
             if (resOutClass?.groupValues != null) this._isInOuterClass = true
+            else if (pline.contains("trigger", ignoreCase = true)) this.isTrigger = true
             this._updFromDelim(delim)
             return
         }

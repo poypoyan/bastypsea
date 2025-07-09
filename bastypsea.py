@@ -19,6 +19,7 @@ class ApexCodeState:
         self.types = [obj]
         self.is_comment = False
         self.is_test_class = False
+        self.is_trigger = False
 
         self._RGX_CLASS = '^[a-z\\s]+\\sclass\\s+([a-z0-9_]+)'
         self._RGX_DMLS = ['', '']
@@ -75,12 +76,14 @@ class ApexCodeState:
 
         # search for outer class init
         res = re.search(self._RGX_CLASS, pline, re.I)
-        if not self._is_in_outer_class:
+        if not (self._is_in_outer_class or self.is_trigger):
             # check if test class
             if '@istest' in pline.casefold():
                 self.is_test_class = True
             if res:
                 self._is_in_outer_class = True
+            elif 'trigger' in pline.casefold():
+                self.is_trigger = True
             self._upd_from_delim(delim)
             return
 
