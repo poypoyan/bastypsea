@@ -13,7 +13,7 @@ def test_UnitTest():
 
 def test_SimpleDML():
     expected = [{'init_line_n': 10, 'line_n': 21, 'pline': '        daTabAse.INseRTiMmEDiatE(y, false);'},
-                {'init_line_n': 9, 'line_n': 21, 'pline': ' insErT x;'}]
+                {'init_line_n': 9, 'line_n': 21, 'pline': ' insErT X;'}]
     outputs = bastypsea('./testdata/SimpleDML.cls', 'Contact', 'Insert')
 
     assert len(outputs) == 2

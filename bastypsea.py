@@ -151,7 +151,7 @@ class ApexCodeState:
 
     def _res_from_action(self, res: re.Match, pline: str, founds: list) -> bool:
         for i, var in enumerate(self.vars):
-            if res.group(1) == var['name']:
+            if res.group(1).casefold() == var['name'].casefold():
                 founds.append({
                     'line_n': self.line,
                     'init_line_n': var['line_n'],

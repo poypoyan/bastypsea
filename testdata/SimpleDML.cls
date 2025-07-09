@@ -18,7 +18,7 @@ public class SimpleDML extends ParentClass {
             insert y;
         */
         // INSERT x; this may trick parser
-        daTabAse.INseRTiMmEDiatE(y, false); insErT x;
+        daTabAse.INseRTiMmEDiatE(y, false); insErT X;
 
         DeLeTE [SELECT Id FROM  Contact LIMIT 5];
         database.deleteAsync([SELECT Id FROM Contact LIMIT 5]);

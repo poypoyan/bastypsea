@@ -23,7 +23,7 @@ fun testUnitTest() {
 fun testSimpleDML() {
     val expected = arrayOf<OutputEntry>(
         OutputEntry(10, 21, "daTabAse.INseRTiMmEDiatE(y, false);"),
-        OutputEntry(9, 21, "insErT x;"),
+        OutputEntry(9, 21, "insErT X;"),
     )
     val outputs = btsRun(Path("./testdata/SimpleDML.cls"), "Contact", "Insert")
 

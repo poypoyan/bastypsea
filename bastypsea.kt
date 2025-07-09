@@ -3,6 +3,7 @@ Basic Type Search (bastypsea) for Apex language
 By poypoyan
 
 Implemented in Kotlin/JVM 1.9.10 and Java 17.0.8
+For Kotlin compiler, see https://kotlinlang.org/docs/command-line.html
 Compile command: kotlinc bastypsea.kt -include-runtime -d bastypsea.jar
 Run command: java -jar bastypsea.jar
 
@@ -172,7 +173,7 @@ class ApexCodeState(val PATH: Path, val OBJ: String, val ACT: String, val IS_IGN
 
     private fun _resFromAction(res: MatchResult, pline: String, founds: MutableList<OutputEntry>): Boolean {
         for (i in this.vars.indices) {
-            if (res.groupValues[1] == this.vars[i].name) {
+            if (res.groupValues[1].equals(this.vars[i].name, ignoreCase = true)) {
                 founds.add(OutputEntry(this.vars[i].lineN, this.line, pline.trimIndent()))
                 this.vars.removeAt(i)
                 return true
@@ -226,7 +227,7 @@ fun main(args: Array<String>) {
 
     Note that Path can be a directory like "./classes/" or
     a file like "./classes/MyApexClass.cls". For the case
-    of directory, only .cls files are scanned.
+    of directory, only .cls and .trigger files are scanned.
 
     If Path is just "." and "./force-app/main/default/classes"
     exists, scanning will be performed in classes directory.
@@ -262,7 +263,7 @@ fun main(args: Array<String>) {
         return
     }
     if (Files.isRegularFile(path)) classes = listOf<Path>(path)
-    else if(Files.isDirectory(path)) classes = path.listDirectoryEntries("*.cls")
+    else if(Files.isDirectory(path)) classes = path.listDirectoryEntries("*.cls") + path.listDirectoryEntries("*.trigger")
     else {
         System.err.println("Error: path exists, but is unsupported.")
         return
