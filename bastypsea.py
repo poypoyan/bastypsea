@@ -10,7 +10,6 @@ import re
 
 class ApexCodeState:
     def __init__(self, fname: str, obj: str, act: str, ignore_test: bool):
-        self.DELIMS = ['//', '/*', '*/', ';', '{', '}']
         self.FNAME = fname
         self.IS_IGNORE_TEST = ignore_test
         self.IS_CHECK_VAR_ONLY = False
@@ -21,6 +20,7 @@ class ApexCodeState:
         self.is_test_class = False
         self.is_trigger = False
 
+        self._DELIMS = ['//', '/*', '*/', ';', '{', '}']
         self._RGX_CLASS = '^[a-z\\s]+\\sclass\\s+([a-z0-9_]+)'
         self._RGX_DMLS = ['', '']
         self._RGX_DMLS_STR = ['', '']
@@ -37,16 +37,16 @@ class ApexCodeState:
             self._RGX_DMLS[0] = f'{ act }\\s+([a-z0-9_]+)'   # DML
             self._RGX_DMLS[1] = f'Database.{ act }[a-z]*\\s*\\(\\s*([a-z0-9_]+)'   # Database method
             self._RGX_DMLS_STR[0] = f'{ act }\\s+\\[\\s*SELECT[a-z0-9_,\\s]+FROM\\s+{ obj }'   # DML straight from SOQL
-            self._RGX_DMLS_STR[1] = f'Database.{ act }[a-z]*\\s*\\(\\s*\\[\\s*SELECT[a-z0-9_,\\s]+FROM\\s+{ obj }'   # Database method straight
+            self._RGX_DMLS_STR[1] = f'Database.{ act }[a-z]*\\s*\\(\\s*\\[\\s*SELECT[a-z0-9_,\\s]+FROM\\s+{ obj }'   # Database method straight from SOQL
 
     def proc_line_stop(self, line: str, founds: list) -> bool:
         STOP = True
         part_start = 0
 
         for i in range(len(line)):
-            for j, delim in enumerate(self.DELIMS):
+            for j, delim in enumerate(self._DELIMS):
                 i_plus = i + len(delim)
-                if line[i: i_plus] == delim and (j < 3 or (3 <= j and not self.is_comment)):
+                if line[i: i_plus] == delim and (j < 3 or (3 <= j and not self.is_comment)):   # note: first 3 _DELIMS are for comments
                     self.upd_from_pline(line[part_start: i_plus], j, founds)
                     if self.IS_IGNORE_TEST and self.is_test_class:
                         return STOP

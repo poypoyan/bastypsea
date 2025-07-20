@@ -22,7 +22,6 @@ data class VarEntry(val lineN: Int, val name: String)
 data class OutputEntry(val initLineN: Int, val lineN: Int, val pline: String)
 
 class ApexCodeState(val PATH: Path, val OBJ: String, val ACT: String, val IS_IGNORE_TEST: Boolean) {
-    val DELIMS = arrayOf<String>("//", "/*", "*/", ";", "{", "}")
     val vars = mutableListOf<VarEntry>()
     val types = mutableListOf<String>(OBJ)
     var IS_CHECK_VAR_ONLY = false
@@ -31,6 +30,7 @@ class ApexCodeState(val PATH: Path, val OBJ: String, val ACT: String, val IS_IGN
     var isTestClass = false
     var isTrigger = false
 
+    private val _DELIMS = arrayOf<String>("//", "/*", "*/", ";", "{", "}")
     private val _RGX_CLASS = Regex("^[a-z\\s]+\\sclass\\s+([a-z0-9_]+)", RegexOption.IGNORE_CASE)
     private val _RGX_DMLS = arrayOf<Regex?>(null, null)
     private val _RGX_DMLS_STR = arrayOf<Regex?>(null, null)
@@ -48,7 +48,7 @@ class ApexCodeState(val PATH: Path, val OBJ: String, val ACT: String, val IS_IGN
             _RGX_DMLS[0] = Regex("${ACT}\\s+([a-z0-9_]+)", RegexOption.IGNORE_CASE)   // DML
             _RGX_DMLS[1] = Regex("Database.${ACT}[a-z]*\\s*\\(\\s*([a-z0-9_]+)", RegexOption.IGNORE_CASE)   // Database method
             _RGX_DMLS_STR[0] = Regex("${ACT}\\s+\\[\\s*SELECT[a-z0-9_,\\s]+FROM\\s+${OBJ}", RegexOption.IGNORE_CASE)   // DML straight from SOQL
-            _RGX_DMLS_STR[1] = Regex("Database.${ACT}[a-z]*\\s*\\(\\s*\\[\\s*SELECT[a-z0-9_,\\s]+FROM\\s+${OBJ}", RegexOption.IGNORE_CASE)   // Database method straight
+            _RGX_DMLS_STR[1] = Regex("Database.${ACT}[a-z]*\\s*\\(\\s*\\[\\s*SELECT[a-z0-9_,\\s]+FROM\\s+${OBJ}", RegexOption.IGNORE_CASE)   // Database method straight from SOQL
         }
     }
 
@@ -58,9 +58,9 @@ class ApexCodeState(val PATH: Path, val OBJ: String, val ACT: String, val IS_IGN
         var iPlus: Int
 
         for (i in 0..<line.length) {
-            for (j in this.DELIMS.indices) {
-                iPlus = i + this.DELIMS[j].length
-                if (line.substring(i..<Math.min(line.length, iPlus)) == this.DELIMS[j] && (j < 3 || (3 <= j && !this.isComment))) {
+            for (j in this._DELIMS.indices) {
+                iPlus = i + this._DELIMS[j].length
+                if (line.substring(i..<Math.min(line.length, iPlus)) == this._DELIMS[j] && (j < 3 || (3 <= j && !this.isComment))) {   // note: first 3 _DELIMS are for comments
                     this.updFromPline(line.substring(partStart..<Math.min(line.length, iPlus)), j, founds)
                     if (this.IS_IGNORE_TEST && this.isTestClass) return STOP
                     partStart = iPlus
@@ -232,8 +232,10 @@ fun main(args: Array<String>) {
     of directory, only .cls and .trigger files are scanned.
 
     If Path is just "." and "./force-app/main/default/classes"
-    exists, scanning will be performed in classes directory.
-    This is for ease in working with SFDX projects.
+    exists, then scanning will be performed in classes directory.
+    Similarly, if Path is just ".t" and "./force-app/main/default/triggers"
+    exists, then scanning will be performed in triggers directory.
+    This is for ease in working with local SF projects.
     """.trimIndent()
     val classes: List<Path>
     var isIgnoreTest = true
@@ -257,9 +259,12 @@ fun main(args: Array<String>) {
     }
 
     var path = Path(args[2])
-    if (args[2] == ".") {
-        val sfdxPath = Path("./force-app/main/default/classes")
-        if (Files.exists(sfdxPath)) path = sfdxPath
+    val PACK_CLASS = Path("./force-app/main/default/classes")
+    val PACK_TRIGGER = Path("./force-app/main/default/triggers")
+    if (args[2] == "." && Files.exists(PACK_CLASS)) {
+        path = PACK_CLASS
+    } else if (args[2] == ".t" && Files.exists(PACK_TRIGGER)) {
+        path = PACK_TRIGGER
     } else if (!Files.exists(path)) {
         System.err.println("Error: path does not exist.")
         return
